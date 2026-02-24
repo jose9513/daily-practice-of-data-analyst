@@ -147,7 +147,7 @@ print(f"💰 Si vendemos 2, ganamos: {precio_final * 2}")
 """
 
 
-
+"""
 import requests
 from bs4 import BeautifulSoup
 import time # Importante para no ser bloqueado
@@ -213,3 +213,32 @@ df = pd.DataFrame(catalogo_total)
 df.to_csv('Reporte_Libros_Artemisa.csv', index=False, encoding='utf-8-sig')
 
 print(f"✅ ¡Éxito! Archivo guardado: 'Reporte_Libros_Artemisa.csv'")
+"""
+
+
+
+import requests
+from bs4 import BeautifulSoup
+
+def limpiar_precio(precio_inicio):
+    # Elimina espacios, símbolos y convierte a número
+    solo_numeros = "".join(caracter for caracter in precio_inicio if caracter.isdigit() or caracter == ".")
+    
+    return float(solo_numeros)
+
+url_base = "https://books.toscrape.com/"
+html_obtenido = requests.get(url_base).text
+res = requests.get(url_base)
+res.encoding = 'utf-8'
+soup = BeautifulSoup(html_obtenido, 'html.parser')
+
+padre = soup.find_all('article', class_='product_pod')
+
+cinco_primeros = padre[:5]
+
+for libro in cinco_primeros:
+    titulo = libro.find('h3').find('a')['title']
+    precio_sucio = libro.find('p', class_='price_color').text
+    precio_limpio = limpiar_precio(precio_sucio)
+    
+    print(f"Libro: {titulo} | Precio: {precio_limpio}")
