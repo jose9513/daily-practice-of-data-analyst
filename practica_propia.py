@@ -1,4 +1,6 @@
-"""import requests
+"""----------------------- PRACTICA PROPIA ------------------"""
+"""
+import requests
 from bs4 import BeautifulSoup
 
 URL_BASE = "https://lionluxury.com.pe/collections/cadenas-de-acero-316l"
@@ -29,6 +31,7 @@ print(f"se encontraros {len(productos_joyas)} productos: ")
 pprint(productos_joyas)
 """
 
+"""----------------------- PRACTICA PROPIA ------------------"""
 
 """
 from bs4 import BeautifulSoup
@@ -46,6 +49,7 @@ Titulos_todos = soup.find_all('a', class_='title')
 print(f"el tipo de dato es: {type(Titulos_todos)}")
 """
 
+"""----------------------- EJEMPLO CON GEMINI ------------------"""
 
 """
 from bs4 import BeautifulSoup
@@ -102,6 +106,8 @@ for card in tarjetas_joyas:
     print(f"Joya: {nombre} | Precio: {precio}")
     """
 
+"""----------------------- EJEMPLO CON GEMINI ------------------"""
+
 """
 from bs4 import BeautifulSoup
 
@@ -111,9 +117,6 @@ html_tienda =
     <div class="producto"> <h3>Samsung S24</h3> <span class="precio">$899</span> </div>
     <div class="producto"> <h3>Pixel 8</h3> <span class="precio">$799</span> </div>
 </div>
-
-
-
 
 soup = BeautifulSoup(html_tienda, 'html.parser')
 
@@ -131,6 +134,7 @@ for card in tarjetas:
     print(f"Producto: {titulo} | Precio: {precio}")
 """
 
+"""----------------------- EMEPLO CON GEMINI ------------------"""
 
 """
 precio_sucio = "\n  S/. 3.500,00  \n"
@@ -146,6 +150,7 @@ print(f"✅ Precio Final (Numérico): {precio_final}")
 print(f"💰 Si vendemos 2, ganamos: {precio_final * 2}")
 """
 
+"""----------------------- EJEMPLO CON GEMINI ------------------"""
 
 """
 import requests
@@ -215,8 +220,9 @@ df.to_csv('Reporte_Libros_Artemisa.csv', index=False, encoding='utf-8-sig')
 print(f"✅ ¡Éxito! Archivo guardado: 'Reporte_Libros_Artemisa.csv'")
 """
 
+"""----------------------- PRACTICA PROPIA ------------------"""
 
-
+"""
 import requests
 from bs4 import BeautifulSoup
 
@@ -242,3 +248,217 @@ for libro in cinco_primeros:
     precio_limpio = limpiar_precio(precio_sucio)
     
     print(f"Libro: {titulo} | Precio: {precio_limpio}")
+"""
+
+"""----------------------- PRACTICA PROPIA ------------------"""
+
+"""
+import requests
+from bs4 import BeautifulSoup
+
+URL_BASE = "https://books.toscrape.com/"
+res = requests.get(URL_BASE)
+res.encoding = 'utf-8'
+soup = BeautifulSoup(res.text, 'html.parser')
+
+padre = soup.find('ul', class_='nav-list').find('li').find('ul').find_all('li')
+
+for nombre in padre:
+    print(nombre.text.strip())
+"""
+
+"""----------------------- PRACTICA PROPIA ------------------"""
+
+"""
+import requests
+from bs4 import BeautifulSoup
+
+URL_BASE = "https://books.toscrape.com/"
+res = requests.get(URL_BASE)
+res.encoding = 'utf-8'
+soup = BeautifulSoup(res.text, 'html.parser')
+
+obj = soup.find('img', class_='thumbnail')
+print(f"{URL_BASE}{obj['src']}")
+"""
+
+"""----------------------- PRACTICA PROPIA ------------------"""
+
+"""
+import requests
+from bs4 import BeautifulSoup
+
+URL_BASE = "https://books.toscrape.com/"
+res = requests.get(URL_BASE)
+res.encoding = 'utf-8'
+soup = BeautifulSoup(res.text, 'html.parser')
+
+todas_etiquetas_a =[a['href'] for a in soup.find_all('a', href=True)]
+print(f"Encontré {len(todas_etiquetas_a)} enlaces en la página.")
+"""
+
+
+
+"""
+import requests
+from bs4 import BeautifulSoup
+
+#obtenemos el HTML de la página
+URL_BASE = "https://books.toscrape.com/"
+res = requests.get(URL_BASE)
+res.encoding = 'utf-8'
+soup = BeautifulSoup(res.text, 'html.parser')
+
+#funcion para limpiar los caracteres innecesarios del precio
+def limpiar_precio(precio_inicio):
+    # Elimina espacios, símbolos y convierte a número
+    solo_numeros = "".join(caracter for caracter in precio_inicio if caracter.isdigit() or caracter == ".")
+    
+    return float(solo_numeros)
+
+#buscamos el contenedor padre de los libros
+contenedor_libros = soup.find_all('article', class_='product_pod')
+
+#diccionario que contendra los primeros 10 libros con su precio limpio
+primeros_10_libros = {}
+
+#iteramos sobre los primeros 10 libros encontrados
+for libro in contenedor_libros[:10]:
+    # Extraemos el título y precio de CADA libro (usando la variable 'libro')
+    titulo = libro.find('h3').find('a')['title']
+    precio_sucio = libro.find('p', class_='price_color').text
+    precio_limpio = limpiar_precio(precio_sucio)
+    primeros_10_libros[titulo] = precio_limpio
+
+# REPORTE FINAL
+print("Los primeros 10 libros son:")
+for titulo, precio in primeros_10_libros.items():
+    print(f"Libro: {titulo} | Precio: {precio}")
+
+# Cálculo del precio promedio
+promedio_precio = sum(primeros_10_libros.values()) / len(primeros_10_libros)
+print(f"\nEl precio promedio de los primeros 10 libros es: {promedio_precio:.2f}")
+"""
+
+
+
+"""
+import requests
+
+datos = [{"prod": "Reloj", "info": {"p": 50}}, {"prod": "Anillo"}, {"prod": "Cadena", "info": {}}]
+
+precio_p = datos[0].get("info", {}).get("p", "Precio no disponible")
+print(f"El precio del producto es: {precio_p}")
+"""
+
+
+
+"""
+import requests
+from bs4 import BeautifulSoup
+
+datos_del_login = {
+    'username': 'JoseUsuario',
+    'password': 'mi_password_seguro'
+}
+
+sesion = requests.Session()
+
+URL_BASE = "https://quotes.toscrape.com/"
+URL_LIGIN = URL_BASE + "login"
+sesion.post(URL_LIGIN, data=datos_del_login)
+
+respuesta = sesion.get(URL_BASE)
+soup = BeautifulSoup(respuesta.text, 'html.parser')
+
+boton_logout = soup.find('a', href='/logout')
+
+if boton_logout:
+    print("✅ ¡Infiltración exitosa! Estamos dentro del sistema.")
+    print(sesion.cookies.get_dict())  # Muestra las cookies que se están usando en la sesión
+else:
+    print("❌ Error de acceso. El servidor nos rechazó.")
+    """
+    
+    
+    
+"""    
+import requests
+from bs4 import BeautifulSoup
+
+# Creamos la mochila
+sesion = requests.Session()
+
+# Iniciamos el contador en cero
+total_libros_acumulados = 0
+
+for pagina in range(1, 4):
+    url = f"https://books.toscrape.com/catalogue/page-{pagina}.html"
+    print(f"🔎 Explorando la {url}...")
+    
+    # Hacemos la petición usando la sesión
+    res = sesion.get(url)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    
+    # Buscamos todos los artículos de libros en esta página
+    libros_en_esta_página = soup.find_all('article', class_='product_pod')
+    cantidad = len(libros_en_esta_página)
+    
+    print(f"✅ Encontré {cantidad} libros en esta página.")
+    
+    # Sumamos al total (el símbolo += significa: "lo que ya tenía más lo nuevo")
+    total_libros_acumulados += cantidad
+    
+print("-" * 30)
+print(f"🏆 ¡OPERACIÓN TERMINADA!")
+print(f"📚 Total de libros recolectados entre las 3 páginas: {total_libros_acumulados}")
+"""
+
+
+
+"""
+import requests
+
+datos = [
+    {"producto": "Reloj", "precio": 50},
+    {"producto": "Anillo"},
+    {"producto": "Collar", "precio": 120}
+]
+
+for item in datos:
+    producto = item.get("producto", "Producto desconocido")
+    precio = item.get("precio", "Precio no disponible")
+    
+    print(f"Producto: {producto} | Precio: {precio}")
+"""
+
+
+
+
+import requests
+from bs4 import BeautifulSoup
+
+# Creamos la mochila
+sesion = requests.Session()
+
+# Iniciamos el contador en cero
+total_titulos_acumulados = 0
+
+for pagina in range(1, 4):
+    url = f"https://books.toscrape.com/catalogue/page-{pagina}.html"
+    print(f"🔎 Explorando la {url}...")
+    
+    # Hacemos la petición usando la sesión
+    res = sesion.get(url)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    
+    titulos_en_esta_pagina = soup.find_all('h3')
+    cantidad_titulos_en_esta_pagina = len(titulos_en_esta_pagina)
+    
+    total_titulos_acumulados += cantidad_titulos_en_esta_pagina
+    
+    print(f"✅ Encontré {cantidad_titulos_en_esta_pagina} títulos en esta página.")
+    
+print("-" * 30)
+print(f"🏆 ¡OPERACIÓN TERMINADA!")
+print(f"📚 Total de títulos recolectados entre las 3 páginas: {total_titulos_acumulados}")
