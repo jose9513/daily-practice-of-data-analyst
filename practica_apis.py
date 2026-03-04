@@ -365,7 +365,7 @@ else:
     
 #Domingo 1 de Marzo
 
-
+"""
 import requests
 import json
 
@@ -387,3 +387,79 @@ for productos in datos_json:
         nombre_articulos_baratos.append(nombre)
     
 print(f"{nombre_articulos_baratos}")
+"""
+
+# Lunes 2 de Marzo
+
+"""
+import csv
+
+# 1. Los datos "falsos" que vamos a guardar por ahora (una lista de listas)
+datos_inventario = [
+    ["Anillo de Oro 18k", 150],
+    ["Collar de Plata", 80],
+    ["Pulsera con Diamantes", 300]
+]
+
+# 2. Creamos (o abrimos) el archivo en modo "w" (write = escribir)
+with open("inventario_artemisa.csv", mode="w", newline="", encoding="utf-8") as archivo:
+    
+    # Creamos la herramienta que sabe cómo escribir en formato CSV
+    escritor_csv = csv.writer(archivo)
+    
+    # 3. Primero, escribimos la fila de los títulos (Cabeceras)
+    escritor_csv.writerow(["Nombre del Producto", "Precio en Dólares"])
+    
+    # 4. Segundo, escribimos todos los datos de golpe
+    escritor_csv.writerows(datos_inventario)
+
+print("✅ ¡Magia pura! El archivo 'inventario_artemisa.csv' se ha creado.")
+"""
+
+
+
+
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+sesion = requests.Session()
+
+# 1. Creamos la "caja fuerte" donde guardaremos todo antes de pasarlo al CSV
+todos_los_libros = []
+
+print("🚀 Iniciando extracción de datos...")
+
+# 2. El motor del bot (viajamos por 3 páginas)
+for pagina in range(1, 4):
+    url = f"https://books.toscrape.com/catalogue/page-{pagina}.html"
+    print(f"🔎 Extrayendo página {pagina}...")
+    
+    res = sesion.get(url)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    
+    libros = soup.find_all('article', class_='product_pod')
+    
+    # 3. Extraemos título y precio de cada libro
+    for libro in libros:
+        titulo = libro.find('h3').find('a')['title']
+        precio = libro.find('p', class_='price_color').text
+        
+        # Juntamos los datos en una mini-lista y los guardamos en la caja fuerte
+        datos_del_libro = [titulo, precio]
+        todos_los_libros.append(datos_del_libro)
+
+print(f"✅ Extracción completada. {len(todos_los_libros)} libros encontrados.")
+print("💾 Guardando en archivo Excel (CSV)...")
+
+# 4. Abrimos el archivo y guardamos la información
+with open("base_de_datos_libros.csv", mode="w", newline="", encoding="utf-8") as archivo:
+    escritor = csv.writer(archivo)
+    
+    # Escribimos los títulos de las columnas
+    escritor.writerow(["Título del Libro", "Precio"])
+    
+    # Guardamos todos los datos de golpe
+    escritor.writerows(todos_los_libros)
+
+print("🏆 ¡Éxito! Tu base de datos está lista en 'base_de_datos_libros.csv'.")
