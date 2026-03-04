@@ -542,7 +542,7 @@ print("🏆 ¡Éxito! Tu base de datos está lista en 'base_de_datos_libros.csv'
 
 
 
-
+"""
 import requests
 import csv
 
@@ -561,7 +561,7 @@ for joya in datos_joyas:
     # Metemos cada joya en la caja temporal
     lista_para_excel.append([nombre, precio])
 
-print("✅ Datos de joyas extraídos. Preparando el Excel...")
+print("✅ Datos de joyas extraídos. Preparando el Excel...")    
 
 # ==========================================
 # 🚨 TU MISIÓN EMPIEZA AQUÍ 🚨
@@ -584,3 +584,39 @@ with open("base_datos_artemisa.csv", mode="w", newline="", encoding="utf-8") as 
     escritor.writerows(lista_para_excel)
 
 print("🏆 ¡Base de datos de Artemisa creada exitosamente!")
+"""
+
+#practica martes 3 de marzo
+
+
+import requests
+from bs4 import BeautifulSoup
+import csv
+
+sesion = requests.session()
+
+lista_de_frases = []
+
+for pagina in range(1, 4):
+    URL = f"https://quotes.toscrape.com/page/{pagina}/"
+    res = sesion.get(URL)
+    soup = BeautifulSoup(res.text, 'html.parser')
+    
+    frases = soup.find_all('div', class_='quote')
+    
+    for frase in frases:
+        texto = frase.find('span', class_='text').text
+        autor = frase.find('small', class_='author').text
+        
+        frase_autor = [texto, autor]
+        lista_de_frases.append(frase_autor)
+    
+with open("filosofia.csv", mode="w", newline="", encoding="utf-8") as archivo:
+    
+    escritor = csv.writer(archivo)
+    escritor.writerow(["frase del autor", "autor"])
+    
+    for frase in lista_de_frases:
+        escritor.writerow(frase)
+        
+print("se añadieron todas las frases de las primeras 3 paginas al archivo .csv")
