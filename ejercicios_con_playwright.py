@@ -117,7 +117,7 @@ with sync_playwright() as p:
     
 
 
-
+"""
 from playwright.sync_api import sync_playwright
 
 with sync_playwright() as p:
@@ -136,4 +136,25 @@ with sync_playwright() as p:
     print("5. dandole click al boton de submit par aingresar a la pagina...")
     pagina.locator("input[type='submit']").click()
     
+    pagina.wait_for_timeout(3000)
+    """
+    
+    
+    
+    
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    navegador = p.chromium.launch(headless=False)
+    
+    pagina = navegador.new_page()
+    pagina.goto("https://es.wikipedia.org/")
+    
+    print("buscando el buscarod de wikipedia")
+    pagina.locator("#searchInput").fill("filosofia")
+    
+    print("dandole enter a la busqueda que hicimos")
+    pagina.locator("#searchInput").press("Enter")
+    
+    print("viendo el resultado de la busqueda")
     pagina.wait_for_timeout(3000)
