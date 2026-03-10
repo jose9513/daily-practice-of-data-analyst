@@ -161,6 +161,7 @@ with sync_playwright() as p:
 """
 
 #lunes 9 de marzo
+#ejercicio que obtiene la primera frase de la pagina de las etiquetas .text que encuentre
 
 """
 from playwright.sync_api import sync_playwright
@@ -178,9 +179,9 @@ with sync_playwright() as p:
     print(f"{frase_robada}")
     """
     
+#ejercicio que obtiene todas las frases de las etiquetas .text que encuentre
     
-    
-    
+"""    
 from playwright.sync_api import sync_playwright
 
 with sync_playwright() as p:
@@ -198,3 +199,26 @@ with sync_playwright() as p:
     
     for i in todas_las_frases:
         print(f"{i}")
+"""
+
+#ejercicio que obtiene las frases que encuentre y el autor correspondiente
+
+
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    navegador = p.chromium.launch()
+    
+    pagina = navegador.new_page()
+    pagina.goto("https://quotes.toscrape.com/")
+    
+    frase = pagina.locator(".text").all_inner_texts()
+    autor = pagina.locator(".author").all_inner_texts()
+    
+    cantidad = len(frase)
+    print(f"obtuvimos un total de {cantidad} frases")
+    
+    for i in range(5):
+        print(f"{frase[i]}")
+        print(f"{autor[i]}")
+        print("---------------------------------------------")
