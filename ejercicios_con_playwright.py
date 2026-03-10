@@ -203,7 +203,7 @@ with sync_playwright() as p:
 
 #ejercicio que obtiene las frases que encuentre y el autor correspondiente
 
-
+"""
 from playwright.sync_api import sync_playwright
 
 with sync_playwright() as p:
@@ -222,3 +222,27 @@ with sync_playwright() as p:
         print(f"{frase[i]}")
         print(f"{autor[i]}")
         print("---------------------------------------------")
+"""
+
+#ejercicio que captura el primer texto de cada pagina del link
+
+
+from playwright.sync_api import sync_playwright
+
+with sync_playwright() as p:
+    navegador = p.chromium.launch(headless=True)
+    
+    pagina = navegador.new_page()
+    pagina.goto("https://quotes.toscrape.com/")
+    
+    primera_frase = pagina.locator(".text").first.inner_text()
+    print(f"esta es la primera frase: {primera_frase}")
+    
+    #pasamos a la siguiente pagina
+    pagina.locator("text=Next").click()
+    
+    print("------------------------------------------------------------------------------------------")
+    segunda_frase = pagina.locator(".text").first.inner_text()
+    print(f"esta es la segunda frase: {segunda_frase}")
+    
+    print("se obtuvieron las primeras frases de las 2 paginas")
