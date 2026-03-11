@@ -532,7 +532,7 @@ else:
 
 
 
-
+"""
 import requests
 import json
 import csv
@@ -555,5 +555,13 @@ for joyas in datos_json:
     
     catalogo_final.append([nombre, precio, imagen])
     
-from pprint import pprint as pp
-pp(catalogo_final)
+with open ("catalogo_final.csv", mode="w", newline="", encoding="utf-8") as archivo:
+    escritor = csv.writer(archivo)
+    
+    escritor.writerow(["nombre de la joya", "precio de la joya", "imagen de la joya"])
+    
+    for producto in catalogo_final:
+        escritor.writerow(producto)
+        
+        print("es acaba de añadir un nuevo producto al catalogo final")
+"""

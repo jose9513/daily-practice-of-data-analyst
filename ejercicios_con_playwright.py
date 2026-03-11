@@ -347,7 +347,7 @@ entrar_con_coockie()
 
 #ejercicio para agarrar la coockie que guardamos antes y usarla para acceder a la misma pagina web sin usuario ni contraseña, si no funciona entonces ingresamos con usuario y contraseña y reemplazamos la coockie anterior por la nueva
 
-
+"""
 import os
 from playwright.sync_api import sync_playwright
 
@@ -381,3 +381,45 @@ with sync_playwright() as p:
         print("se consiguio entrar a la pagina con la coockie obtenida en el pasado")
         
     pagina.wait_for_timeout(4000)
+"""
+
+#miercoles 11 de marzo
+#ejercicio para entrar a otra pagina que tiene mejor seguridad que la anterior
+
+
+import os
+from playwright.sync_api import sync_playwright
+
+archivo_sesion = "llave.ecommerce.json"
+
+with sync_playwright() as p:
+    navegador = p.chromium.launch(headless=False, slow_mo=500)
+    
+    if os.path.exists(archivo_sesion):
+        print("coockie encontrada, usandola para entrar a la pagina")
+        contexto = navegador.new_context(storage_state=archivo_sesion)
+    else:
+        print("no se encontro el archivo de la coockie, ingresando a la pagina manualmente")
+        contexto = navegador.new_context()
+        
+    pagina = contexto.new_page()
+    pagina.goto("https://www.saucedemo.com/inventory.html")
+    
+    boton_login = pagina.locator("#login-button")
+    
+    if boton_login.is_visible():
+        print("el servidor nos detecto y nos boto al login")
+        
+        pagina.locator("#user-name").fill("standard_user")
+        pagina.locator("#password").fill("secret_sauce")
+        boton_login.click()
+        
+        contexto.storage_state(path=archivo_sesion)
+        print("la nueva coockie se ha guardado en tu pc")
+    else:
+        print("entrando a la pagina con exito")
+        
+    primer_producto = pagina.locator(".inventory_item_name").first.inner_text()
+    print(f"primer producto en pantalla: {primer_producto}")
+
+    pagina.wait_for_timeout(3000)

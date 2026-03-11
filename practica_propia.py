@@ -588,7 +588,7 @@ print("🏆 ¡Base de datos de Artemisa creada exitosamente!")
 
 #practica martes 3 de marzo
 
-
+"""
 import requests
 from bs4 import BeautifulSoup
 import csv
@@ -620,3 +620,4 @@ with open("filosofia.csv", mode="w", newline="", encoding="utf-8") as archivo:
         escritor.writerow(frase)
         
 print("se añadieron todas las frases de las primeras 3 paginas al archivo .csv")
+"""

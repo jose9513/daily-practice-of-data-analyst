@@ -208,7 +208,7 @@ print(primer_copyright.parent)
 """
 
 
-
+"""
 from bs4 import BeautifulSoup
 import requests
 #expreciones regulares
@@ -229,3 +229,20 @@ for string in strings_a_buscar:
         print(f"Resultado para '{string}': {resultado.text}")
     except AttributeError:
         print(f"No se encontró el string '{string}' en el HTML.")
+        """
+        
+        
+"""        
+from bs4 import BeautifulSoup
+import requests
+#expreciones regulares
+import re
+#obtener el HTML de la página
+URL_BASE = "https://scrapepark.org/spanish/"
+
+pedido_obtenido = requests.get(URL_BASE)
+html_obtenido = pedido_obtenido.text
+#parsear el HTML con BeautifulSoup
+soup = BeautifulSoup(html_obtenido, 'html.parser')
+
+"""
