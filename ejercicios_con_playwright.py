@@ -250,7 +250,7 @@ with sync_playwright() as p:
 
 #ejercicio que captura todos los datos de todas las paginas de la url
 
-
+"""
 from playwright.sync_api import sync_playwright
 import csv
 
@@ -298,3 +298,30 @@ with open("lista_frases_autores.csv", mode="w", newline="", encoding="utf-8") as
     escritor.writerows(todos_los_datos)
     
 print("se agregaron todas las frases y sus autores a un archivo .csv")
+"""
+
+#martes 10 de marzo
+#ejercicio para loguearse en una pagina y guardar la coockie
+
+
+from playwright.sync_api import sync_playwright
+
+def guardar_sesion():
+    with sync_playwright() as p:
+        navegador = p.chromium.launch(headless=False, slow_mo=500)
+        
+        contexto = navegador.new_context()
+        pagina = contexto.new_page()
+        
+        pagina.goto("https://quotes.toscrape.com/login")
+        pagina.locator("#username").fill("aporia_admin")
+        pagina.locator("#password").fill("filosofia123")
+        pagina.locator("input[type='submit']").click()
+        
+        contexto.storage_state(path="estado_sesion.json")
+        
+        print("archivo 'estado_sesion.json' creado")
+        pagina.wait_for_timeout(3000)
+        
+guardar_sesion()
+
