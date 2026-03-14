@@ -503,7 +503,7 @@ with sync_playwright() as p:
 
 #viernes 13 de noviembre
 
-
+"""
 from playwright.sync_api import sync_playwright
 import time
 import json
@@ -542,3 +542,39 @@ with sync_playwright() as p:
         ofertas.nth(i).click()
         
         time.sleep(2)
+"""
+
+#ejercicio para capturar las apis que pasan por tiktok
+
+
+from playwright.sync_api import sync_playwright
+import time
+
+def atrapar_productos(respuesta):
+    if respuesta.request.resource_type in ["fetch", "xhr"]:
+        if "cloudfront.net" not in respuesta.url and "google-analytics.com" not in respuesta.url and "analytics.google.com" not in respuesta.url and "google.com" not in respuesta.url:
+            print(f"📡 ¡Api detectada!: {respuesta.url}")
+        
+            print(f"   Tipo de paquete: {respuesta.headers.get('content-type', 'Desconocido')}")
+            print("-" * 50)
+        
+        
+with sync_playwright() as p:
+    navegador = p.chromium.launch(headless=False, slow_mo=500)
+    pagina = navegador.new_page()
+    
+    pagina.on("response", atrapar_productos)
+    pagina.goto("https://webscraper.io/test-sites/e-commerce/more/computers/laptops")
+    
+    boton_cargar_mas = pagina.locator("button.e-commerce-more")
+    
+    for i in range(3):
+        if boton_cargar_mas.is_visible():
+            print(f"click {i +1}")
+            boton_cargar_mas.click()
+            
+            time.sleep(2)
+        else:
+            break
+        
+    pagina.wait_for_timeout(5000)
