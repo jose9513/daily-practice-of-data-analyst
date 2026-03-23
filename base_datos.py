@@ -74,7 +74,7 @@ conexion.close()
 #sabado 21 de marzo
 
 
-
+"""
 import sqlite3
 
 lote_nuevo = [
@@ -100,4 +100,26 @@ cursor.execute("SELECT * FROM productos")
 
 mis_datos = cursor.fetchall()
 
+conexion.close()
+"""
+
+#domingo 22 de marzo
+
+
+import sqlite3
+
+conexion = sqlite3.connect("catalogo_bisuteria.db")
+cursor = conexion.cursor()
+
+presupuesto_maximo = 50.0
+
+comando = "SELECT * FROM productos WHERE precio <= ?"
+
+cursor.execute(comando, (presupuesto_maximo,))
+
+mis_datos = cursor.fetchall()
+
+for dato in mis_datos:
+    print(dato)
+    
 conexion.close()
