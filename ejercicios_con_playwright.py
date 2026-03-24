@@ -653,4 +653,4 @@ with sync_playwright() as p:
             precio = producto.get("price", "no se encontro el precio")
             rating = producto.get("rating", "no se encontro el rating")
             
-            print(f"producto: {nombre} \nprecio: {precio} \nprimer comentario: {rating}")
+            print(f"producto: {nombre} \nprecio: {precio} \nrating: {rating}")

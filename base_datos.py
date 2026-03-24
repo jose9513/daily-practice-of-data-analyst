@@ -105,7 +105,7 @@ conexion.close()
 
 #domingo 22 de marzo
 
-
+"""
 import sqlite3
 
 conexion = sqlite3.connect("catalogo_bisuteria.db")
@@ -123,3 +123,23 @@ for dato in mis_datos:
     print(dato)
     
 conexion.close()
+"""
+
+#lunes 23 de marzo
+
+
+import sqlite3 as sql
+
+with sql.connect("catalogo_bisuteria.db") as conexion:
+    cursor = conexion.cursor()
+    cursor.execute("DROP TABLE IF EXISTS productos")
+    cursor.execute('''
+                   CREATE TABLE productos(
+                       id_producto INTEGER,
+                       nombre TEXT,
+                       precio REAL,
+                       comentario TEXT,
+                       PRIMARY KEY(id_producto AUTOINCREMENT)
+                   )
+                   ''')
+    print("se agrego un nuevo campo a la tabla de productos")
