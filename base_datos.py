@@ -127,7 +127,7 @@ conexion.close()
 
 #lunes 23 de marzo
 
-
+"""
 import sqlite3 as sql
 
 with sql.connect("catalogo_bisuteria.db") as conexion:
@@ -143,3 +143,64 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
                    )
                    ''')
     print("se agrego un nuevo campo a la tabla de productos")
+"""
+
+
+import sqlite3
+
+def auditar_inventario():
+    print("Iniciando sistema de inventario...")
+    
+    with sqlite3.connect("artemisa_core.db") as conexion:
+        cursor = conexion.cursor()
+        
+        # 1. ARQUITECTURA (Destruimos y reconstruimos para pruebas limpias)
+        cursor.execute("DROP TABLE IF EXISTS productos")
+        
+        cursor.execute('''
+            CREATE TABLE productos (
+                id_producto INTEGER PRIMARY KEY AUTOINCREMENT,
+                nombre TEXT,
+                categoria TEXT,
+                precio REAL,
+                stock INTEGER
+            )
+        ''')
+        
+        # 2. INYECCIÓN MASIVA (Omitimos el ID para que SQLite lo genere)
+        lote_joyas = [
+            ("Collar de Cuarzo Rosa", "Collares", 85.50, 15),
+            ("Anillo de Plata 925", "Anillos", 120.00, 4),   # Stock crítico
+            ("Pulsera de Amatista", "Pulseras", 45.00, 20),
+            ("Pendientes de Perla", "Aretes", 65.00, 2),     # Stock crítico
+            ("Cadena de Oro 18k", "Collares", 350.00, 8)     # Stock bajo
+        ]
+        
+        comando_insert = "INSERT INTO productos (nombre, categoria, precio, stock) VALUES (?, ?, ?, ?)"
+        cursor.executemany(comando_insert, lote_joyas)
+        print(f"📦 Se inyectaron {cursor.rowcount} productos en la bóveda.")
+        
+        # 3. INTELIGENCIA DE NEGOCIO (El valor para la empresa)
+        # Queremos que el bot nos avise qué productos están a punto de agotarse
+        consulta_alerta = '''
+            SELECT nombre, stock 
+            FROM productos 
+            WHERE stock < 10 
+            ORDER BY stock ASC
+        '''
+        
+        cursor.execute(consulta_alerta)
+        alertas = cursor.fetchall()
+        
+        # 4. REPORTE EJECUTIVO EN TERMINAL
+        print("\n" + "=" * 55)
+        print("🚨 ALERTA AUTOMÁTICA: PRODUCTOS CON STOCK CRÍTICO (< 10)")
+        print("=" * 55)
+        
+        for item in alertas:
+            # item[0] es el nombre, item[1] es el stock
+            print(f"⚠️ Reabastecer urgente: {item[0]:<25} | Quedan: {item[1]} unidades")
+
+# La Regla de Oro: Solo se ejecuta si le damos "Play" a este archivo
+if __name__ == "__main__":
+    auditar_inventario()
