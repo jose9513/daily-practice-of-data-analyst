@@ -195,11 +195,23 @@ if __name__ == "__main__":
     agregar_datos()
 """
 
-
+"""
 with sql.connect("catalogo_bisuteria.db") as conexion:
     cursor = conexion.cursor()
     
     comando = "SELECT * FROM joyas WHERE material = 'Plata 925' AND precio < 100"
+    cursor.execute(comando)
+    datos = cursor.fetchall()
+    
+    for dato in datos:
+        print(dato)
+"""
+
+
+with sql.connect("catalogo_bisuteria.db") as conexion:
+    cursor = conexion.cursor()
+    
+    comando = "SELECT * FROM joyas WHERE categoria IN ('Collares', 'Pulseras') AND material LIKE '%Oro%' "
     cursor.execute(comando)
     datos = cursor.fetchall()
     
