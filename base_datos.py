@@ -146,61 +146,49 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
 """
 
 
-import sqlite3
+import sqlite3 as sql
 
-def auditar_inventario():
-    print("Iniciando sistema de inventario...")
-    
-    with sqlite3.connect("artemisa_core.db") as conexion:
+lote_joyas = [
+    ("Anillo Solitario Diamante", "Anillos", "Oro Blanco 18k", 2500.00, 2),
+    ("Collar Lágrima de Luna", "Collares", "Plata 925", 85.50, 15),
+    ("Pulsera Tejido Bizantino", "Pulseras", "Oro Amarillo 18k", 450.00, 5),
+    ("Aretes Perla Cultivada", "Aretes", "Plata 925", 60.00, 20),
+    ("Anillo Sello Ónice", "Anillos", "Plata 925", 110.00, 8),
+    ("Gargantilla Esmeralda", "Collares", "Oro Blanco 18k", 1800.00, 1),
+    ("Pulsera Hilo Rojo Destino", "Pulseras", "Plata 925", 25.00, 50),
+    ("Argollas Clásicas M", "Aretes", "Oro Amarillo 18k", 220.00, 12),
+    ("Anillo Compromiso Zafiro", "Anillos", "Oro Blanco 18k", 1500.00, 3),
+    ("Cadena Veneciana 45cm", "Collares", "Plata 925", 45.00, 30),
+    ("Dije Árbol de la Vida", "Dijes", "Plata 925", 35.00, 25),
+    ("Anillo Media Alianza", "Anillos", "Oro Rosado 18k", 380.00, 6),
+    ("Pulsera Tenis Circonias", "Pulseras", "Plata 925", 150.00, 10),
+    ("Aretes Topacio Azul", "Aretes", "Oro Blanco 18k", 320.00, 4),
+    ("Collar Doble Capa", "Collares", "Oro Amarillo 18k", 580.00, 7),
+    ("Anillo Minimalista V", "Anillos", "Plata 925", 40.00, 18),
+    ("Pulsera Eslabón Cubano", "Pulseras", "Oro Amarillo 18k", 850.00, 2),
+    ("Aretes Botón Oro", "Aretes", "Oro Rosado 18k", 190.00, 14),
+    ("Dije Inicial Personalizada", "Dijes", "Oro Amarillo 18k", 120.00, 0), # Sin stock
+    ("Collar Cuarzo Rosa", "Collares", "Plata 925", 70.00, 22)
+]
+
+def agregar_datos():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
         cursor = conexion.cursor()
-        
-        # 1. ARQUITECTURA (Destruimos y reconstruimos para pruebas limpias)
-        cursor.execute("DROP TABLE IF EXISTS productos")
-        
+        cursor.execute("DROP TABLE IF EXISTS joyas")
         cursor.execute('''
-            CREATE TABLE productos (
-                id_producto INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT,
-                categoria TEXT,
-                precio REAL,
-                stock INTEGER
-            )
-        ''')
+                       CREATE TABLE joyas (
+                           id_joya INTEGER PRIMARY KEY AUTOINCREMENT,
+                           nombre TEXT,
+                           categoria TEXT,
+                           material TEXT,
+                           precio REAL,
+                           stock INTEGER
+                       )
+                       ''')
         
-        # 2. INYECCIÓN MASIVA (Omitimos el ID para que SQLite lo genere)
-        lote_joyas = [
-            ("Collar de Cuarzo Rosa", "Collares", 85.50, 15),
-            ("Anillo de Plata 925", "Anillos", 120.00, 4),   # Stock crítico
-            ("Pulsera de Amatista", "Pulseras", 45.00, 20),
-            ("Pendientes de Perla", "Aretes", 65.00, 2),     # Stock crítico
-            ("Cadena de Oro 18k", "Collares", 350.00, 8)     # Stock bajo
-        ]
+        comando = "INSERT INTO joyas (nombre, categoria, material, precio, stock) VALUES (?, ?, ?, ?, ?)"
+        cursor.executemany(comando, lote_joyas)
+        print(f"se agregaron {cursor.rowcount} joyas a la base de datos")
         
-        comando_insert = "INSERT INTO productos (nombre, categoria, precio, stock) VALUES (?, ?, ?, ?)"
-        cursor.executemany(comando_insert, lote_joyas)
-        print(f"📦 Se inyectaron {cursor.rowcount} productos en la bóveda.")
-        
-        # 3. INTELIGENCIA DE NEGOCIO (El valor para la empresa)
-        # Queremos que el bot nos avise qué productos están a punto de agotarse
-        consulta_alerta = '''
-            SELECT nombre, stock 
-            FROM productos 
-            WHERE stock < 10 
-            ORDER BY stock ASC
-        '''
-        
-        cursor.execute(consulta_alerta)
-        alertas = cursor.fetchall()
-        
-        # 4. REPORTE EJECUTIVO EN TERMINAL
-        print("\n" + "=" * 55)
-        print("🚨 ALERTA AUTOMÁTICA: PRODUCTOS CON STOCK CRÍTICO (< 10)")
-        print("=" * 55)
-        
-        for item in alertas:
-            # item[0] es el nombre, item[1] es el stock
-            print(f"⚠️ Reabastecer urgente: {item[0]:<25} | Quedan: {item[1]} unidades")
-
-# La Regla de Oro: Solo se ejecuta si le damos "Play" a este archivo
 if __name__ == "__main__":
-    auditar_inventario()
+    agregar_datos()
