@@ -352,6 +352,7 @@ def modelos_menos_de_5():
         for dato in datos:
             print(dato)
 
+#--------------------------------------------------------------------------------------------------------------
 
 def rentabilidad_material():
     with sql.connect("catalogo_bisuteria.db") as conexion:
@@ -367,5 +368,22 @@ def rentabilidad_material():
         for dato in datos:
             print(dato)
 
+#------------------------------------------------------------------------------------
+
+def dinero_inmovilizado():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT categoria, SUM(precio * stock) as suma_total
+                     FROM joyas
+                     WHERE precio > 50
+                     GROUP BY categoria
+                     HAVING suma_total > 1000"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
 if __name__ == "__main__":
-    rentabilidad_material()
+    dinero_inmovilizado()
