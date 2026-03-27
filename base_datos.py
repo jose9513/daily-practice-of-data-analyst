@@ -385,5 +385,27 @@ def dinero_inmovilizado():
         for dato in datos:
             print(dato)
             
-if __name__ == "__main__":
-    dinero_inmovilizado()
+#-------------------------------------------------------------------------------------------------------
+
+lote_ventas = [
+    # (id_joya, fecha, cantidad_vendida)
+    (2, '2026-03-20', 1), 
+    (2, '2026-03-22', 2), 
+    (5, '2026-03-24', 1), 
+    (7, '2026-03-25', 5), 
+    (10, '2026-03-26', 3) 
+]
+
+with sql.connect("catalogo_bisuteria.db") as conexion:
+    cursor = conexion.cursor()
+    
+    comando = """CREATE TABLE ventas(
+                    id_venta INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_joya INTEGER,
+                    fecha TEXT,
+                    cantidad_vendida INTEGER
+              )"""
+    cursor.execute(comando)
+    
+    comando_insert = "INSERT INTO ventas (id_joya, fecha, cantidad_vendida) VALUES (?, ?, ?)"
+    cursor.executemany(comando_insert, lote_ventas)
