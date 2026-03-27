@@ -338,15 +338,34 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
 """
 
 
-with sql.connect("catalogo_bisuteria.db") as conexion:
-    cursor = conexion.cursor()
-    
-    comando = """SELECT categoria, COUNT(nombre) as modelos_distintos
-                 FROM joyas
-                 GROUP BY categoria
-                 HAVING modelos_distintos < 5"""
-    cursor.execute(comando)
-    
-    datos = cursor.fetchall()
-    for dato in datos:
-        print(dato)
+def modelos_menos_de_5():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT categoria, COUNT(nombre) as modelos_distintos
+                    FROM joyas
+                    GROUP BY categoria
+                    HAVING modelos_distintos < 5"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+
+
+def rentabilidad_material():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT material, AVG(precio) as promedio
+                     FROM joyas
+                     GROUP BY material
+                     HAVING promedio > 100"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+
+if __name__ == "__main__":
+    rentabilidad_material()
