@@ -325,11 +325,26 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
         print(dato)
 """
 
-
+"""
 with sql.connect("catalogo_bisuteria.db") as conexion:
     cursor = conexion.cursor()
     
     comando = "SELECT categoria, SUM(precio * stock) FROM joyas GROUP BY categoria"
+    cursor.execute(comando)
+    
+    datos = cursor.fetchall()
+    for dato in datos:
+        print(dato)
+"""
+
+
+with sql.connect("catalogo_bisuteria.db") as conexion:
+    cursor = conexion.cursor()
+    
+    comando = """SELECT categoria, COUNT(nombre) as modelos_distintos
+                 FROM joyas
+                 GROUP BY categoria
+                 HAVING modelos_distintos < 5"""
     cursor.execute(comando)
     
     datos = cursor.fetchall()
