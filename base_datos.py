@@ -267,7 +267,7 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
         print(dato)
 """
 
-
+"""
 with sql.connect("catalogo_bisuteria.db") as conexion:
     cursor = conexion.cursor()
     
@@ -277,3 +277,14 @@ with sql.connect("catalogo_bisuteria.db") as conexion:
     dato = cursor.fetchall()
     
     print(dato)
+"""
+
+
+with sql.connect("catalogo_bisuteria.db") as conexion:
+    cursor = conexion.cursor()
+    
+    comando = "SELECT AVG(precio) FROM joyas WHERE categoria = 'Aretes'"
+    cursor.execute(comando)
+    
+    dato = cursor.fetchall()
+    print(f"el promedio de las joyas de categoria 'aretes' es: {dato[0][0]}")
