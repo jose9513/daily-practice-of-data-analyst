@@ -387,6 +387,7 @@ def dinero_inmovilizado():
             
 #-------------------------------------------------------------------------------------------------------
 
+
 lote_ventas = [
     # (id_joya, fecha, cantidad_vendida)
     (2, '2026-03-20', 1), 
@@ -396,16 +397,36 @@ lote_ventas = [
     (10, '2026-03-26', 3) 
 ]
 
-with sql.connect("catalogo_bisuteria.db") as conexion:
-    cursor = conexion.cursor()
-    
-    comando = """CREATE TABLE ventas(
-                    id_venta INTEGER PRIMARY KEY AUTOINCREMENT,
-                    id_joya INTEGER,
-                    fecha TEXT,
-                    cantidad_vendida INTEGER
-              )"""
-    cursor.execute(comando)
-    
-    comando_insert = "INSERT INTO ventas (id_joya, fecha, cantidad_vendida) VALUES (?, ?, ?)"
-    cursor.executemany(comando_insert, lote_ventas)
+def crear_tabla_ventas():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """CREATE TABLE ventas(
+                        id_venta INTEGER PRIMARY KEY AUTOINCREMENT,
+                        id_joya INTEGER,
+                        fecha TEXT,
+                        cantidad_vendida INTEGER
+                )"""
+        cursor.execute(comando)
+        
+        comando_insert = "INSERT INTO ventas (id_joya, fecha, cantidad_vendida) VALUES (?, ?, ?)"
+        cursor.executemany(comando_insert, lote_ventas)
+
+#-------------------------------------------------------------------------------------------------------
+
+
+def joyas_mayor_al_promedio():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT nombre, precio
+                     FROM joyas
+                     WHERE precio > (SELECT AVG(precio) FROM joyas)"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
+if __name__ == "__main__":
+    joyas_mayor_al_promedio()
