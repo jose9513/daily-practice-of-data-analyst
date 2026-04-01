@@ -428,5 +428,51 @@ def joyas_mayor_al_promedio():
         for dato in datos:
             print(dato)
             
+#-------------------------------------------------------------------------------------------------------
+
+def joyas_menor_al_promedio_plata():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT nombre, precio
+                     FROM joyas
+                     WHERE material = 'Plata 925' AND precio < (SELECT MAX(precio) FROM joyas WHERE material = 'Plata 925')"""
+                     
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
+
+def joyas_sin_ventas():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT nombre, stock
+                     FROM joyas
+                     WHERE id_joya NOT IN (SELECT id_joya FROM ventas)"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
+
+def joyas_mas_caras_de_su_categoria():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT nombre, precio, categoria
+                     FROM joyas AS j1
+                     WHERE precio > (SELECT AVG(precio) FROM joyas AS j2 WHERE j2.categoria = j1.categoria)"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
 if __name__ == "__main__":
-    joyas_mayor_al_promedio()
+    joyas_mas_caras_de_su_categoria()
