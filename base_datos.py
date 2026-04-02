@@ -516,11 +516,29 @@ def rentabilidad_por_categoria():
     with sql.connect("catalogo_bisuteria.db") as conexion:
         cursor = conexion.cursor()
         
-        comando = """SELECT categoria, SUM(precio * stock) as capital_inmovilizado
+        comando = """SELECT material, SUM(precio * stock) as capital_inmovilizado
                      FROM joyas
-                     WHERE id_joya NOT IN (SELECT id_joya FROM ventas)
-                     GROUP BY categoria
+                     WHERE id_joya IN (SELECT id_joya FROM ventas)
+                     GROUP BY material
                      ORDER BY capital_inmovilizado DESC"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
+
+def benchmark_global():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT categoria, AVG(precio) as precio_promedio
+                     FROM joyas
+                     GROUP BY categoria
+                     HAVING precio_promedio > (SELECT AVG(precio) FROM joyas)
+                     ORDER BY precio_promedio DESC"""
+                     
         cursor.execute(comando)
         
         datos = cursor.fetchall()
@@ -538,4 +556,5 @@ if __name__ == "__main__":
     #joyas_mas_caras_de_su_categoria()
     #capital_alto_riesgo()
     #stock_basura()
-    rentabilidad_por_categoria()
+    #rentabilidad_por_categoria()
+    benchmark_global()
