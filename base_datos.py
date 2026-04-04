@@ -626,6 +626,21 @@ def reporte_ventas():
         datos = cursor.fetchall()
         for dato in datos:
             print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
+
+def productos_fracasos():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT j.nombre, j.stock, v.fecha
+                     FROM joyas j
+                     LEFT JOIN ventas v ON j.id_joya = v.id_joya"""
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
 
 if __name__ == "__main__":
     #modelos_menos_de_5()
@@ -644,4 +659,5 @@ if __name__ == "__main__":
     #standar_oro()
     #agujero_financiero()
     #reporte_transacciones()
-    reporte_ventas()
+    #reporte_ventas()
+    productos_fracasos()
