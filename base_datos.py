@@ -561,6 +561,8 @@ def etiqueta_ultra_premium():
         for dato in datos:
             print(dato)
             
+#-------------------------------------------------------------------------------------------------------
+
 def standar_oro():
     with sql.connect("catalogo_bisuteria.db") as conexion:
         cursor = conexion.cursor()
@@ -574,7 +576,40 @@ def standar_oro():
         datos = cursor.fetchall()
         for dato in datos:
             print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
 
+def agujero_financiero():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT categoria, SUM(precio * stock) as capital_inmovilizado
+                     FROM joyas
+                     WHERE id_joya NOT IN (SELECT id_joya FROM ventas)
+                     GROUP BY categoria
+                     HAVING capital_inmovilizado > 500
+                     ORDER BY capital_inmovilizado DESC"""
+                     
+        cursor.execute(comando)
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
+            
+#-------------------------------------------------------------------------------------------------------
+
+def reporte_transacciones():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """SELECT j.nombre, v.fecha, v.cantidad_vendida
+                     FROM joyas j
+                     INNER JOIN ventas v ON j.id_joya = v.id_joya"""
+                     
+        cursor.execute(comando)
+        
+        datos = cursor.fetchall()
+        for dato in datos:
+            print(dato)
 
 if __name__ == "__main__":
     #modelos_menos_de_5()
@@ -590,4 +625,6 @@ if __name__ == "__main__":
     #rentabilidad_por_categoria()
     #benchmark_global()
     #etiqueta_ultra_premium()
-    standar_oro()
+    #standar_oro()
+    #agujero_financiero()
+    reporte_transacciones()
