@@ -759,6 +759,17 @@ def subida_precios():
                      WHERE stock > 0"""
         cursor.execute(comando)
         print(f"Precios actualizados para {cursor.rowcount} joyas con stock mayor a 0")
+        
+#-------------------------------------------------------------------------------------------------------
+
+def limpieza_de_temporada():
+    with sql.connect("catalogo_bisuteria.db") as conexion:
+        cursor = conexion.cursor()
+        
+        comando = """DELETE FROM joyas
+                     WHERE nombre LIKE '%prueba%'"""
+        cursor.execute(comando)
+        print(f"Se eliminaron {cursor.rowcount} joyas de prueba del catálogo")
 
 if __name__ == "__main__":
     #modelos_menos_de_5()
@@ -785,4 +796,5 @@ if __name__ == "__main__":
     #buscador_web()
     #vista_catalogo_publico()
     #registro_venta_segura()
-    subida_precios()
+    #subida_precios()
+    limpieza_de_temporada()
